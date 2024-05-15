@@ -15,6 +15,7 @@ SOURCES += \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
+    registerdialog.cpp \
     schedulewidget.cpp \
     taskmanagerwidget.cpp \
     taskmodifydialog.cpp
@@ -22,6 +23,7 @@ SOURCES += \
 HEADERS += \
     login.h \
     mainwindow.h \
+    registerdialog.h \
     schedulewidget.h \
     taskmanagerwidget.h \
     taskmodifydialog.h
@@ -29,6 +31,7 @@ HEADERS += \
 FORMS += \
     login.ui \
     mainwindow.ui \
+    registerdialog.ui \
     schedulewidget.ui \
     taskmanagerwidget.ui \
     taskmodifydialog.ui

@@ -83,6 +83,13 @@ void MainWindow::createTaskTable(const QString &studentId) {
     taskModel = new QSqlTableModel(this);
     taskModel->setTable("tasks");
     taskModel->setFilter(QString("student_id = '%1'").arg(studentId)); // 设置过滤条件只显示特定用户的任务
+    // 获取当前时间
+    QDateTime currentTime = QDateTime::currentDateTime();
+    QString currentDateTimeString = currentTime.toString(Qt::ISODate); // 将当前时间转换为 ISO 格式的字符串
+
+    // 设置过滤条件，只显示截止时间比当前时间大的任务
+    taskModel->setFilter(QString("student_id = '%1' AND due_datetime > '%2'").arg(studentId).arg(currentDateTimeString));
+
     taskModel->select();
 
 
@@ -125,6 +132,7 @@ void MainWindow::updateTimeLabel(QLabel *label) {
         // 如果查询成功且有结果，则弹出提醒窗口并显示任务内容
                 QString taskContent = query.value("content").toString();
                 QMessageBox::information(this, "提醒", "有任务截止了！\n任务内容：" + taskContent);
+                reSetTable();
     }
 
 }
@@ -147,18 +155,30 @@ void MainWindow::updateGreetingLabel(QLabel *label) {
     label->setText(greeting + " " + studentId); // 更新问候语
 }
 
+
+void MainWindow::reSetTable(){
+    taskModel->setFilter(QString("student_id = '%1'").arg(studentId));
+    // 获取当前时间
+    QDateTime currentTime = QDateTime::currentDateTime();
+    QString currentDateTimeString = currentTime.toString(Qt::ISODate); // 将当前时间转换为 ISO 格式的字符串
+    // 设置过滤条件，只显示截止时间比当前时间大的任务
+    taskModel->setFilter(QString("student_id = '%1' AND due_datetime > '%2'").arg(studentId).arg(currentDateTimeString));
+   taskModel->select();
+}
+
+
+
 void MainWindow::openSchedule() {
     ScheduleWidget *scheduleWidget = new ScheduleWidget(studentId);
     scheduleWidget->show();
-    taskModel->setFilter(QString("student_id = '%1'").arg(studentId));
-   taskModel->select();
+   reSetTable();
 }
 
 void MainWindow::openTaskManager() {
     TaskManagerWidget *taskManagerWidget = new TaskManagerWidget(studentId);
     taskManagerWidget->show();
-    taskModel->setFilter(QString("student_id = '%1'").arg(studentId));
-   taskModel->select();
+
+    reSetTable();
 
 }
 

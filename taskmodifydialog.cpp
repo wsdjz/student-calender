@@ -7,6 +7,8 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QDateTimeEdit>
+#include <QtSql>
+#include <QMessageBox>
 
 TaskModifyDialog::TaskModifyDialog(const QSqlRecord &record, QWidget *parent)
     : QDialog(parent), originalRecord(record)
@@ -64,12 +66,31 @@ TaskModifyDialog::TaskModifyDialog(const QSqlRecord &record, QWidget *parent)
 
 void TaskModifyDialog::saveChanges()
 {
-    modifiedRecord.setValue("content", contentLineEdit->text());
-    modifiedRecord.setValue("priority", priorityComboBox->currentText());
-    modifiedRecord.setValue("due_datetime", dueDateTimeEdit->dateTime().addSecs(-dueDateTimeEdit->dateTime().time().second())); // 移除秒
 
-    accept();
+
+        // 获取修改后的任务内容、重要程度和截止时间
+        QString modifiedContent = contentLineEdit->text();
+        QString modifiedPriority = priorityComboBox->currentText();
+        QDateTime modifiedDueDateTime = dueDateTimeEdit->dateTime().addSecs(-dueDateTimeEdit->dateTime().time().second());
+
+        // 在数据库中检查是否存在与修改后的内容相同的任务
+    //    QSqlQuery query;
+    //    query.prepare("SELECT COUNT(*) FROM tasks WHERE content = :content AND priority = :priority AND due_datetime = :dueDateTime");
+    //    query.bindValue(":content", modifiedContent);
+    //    query.bindValue(":priority", modifiedPriority);
+     //   query.bindValue(":dueDateTime", modifiedDueDateTime);
+
+
+        // 如果没有相同的任务，则更新修改后的记录并接受对话框
+
+        modifiedRecord.setValue("content", modifiedContent);
+        modifiedRecord.setValue("priority", modifiedPriority);
+        modifiedRecord.setValue("due_datetime", modifiedDueDateTime);
+        accept();
+
+
 }
+
 
 QSqlRecord TaskModifyDialog::getModifiedRecord() const
 {

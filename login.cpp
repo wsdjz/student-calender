@@ -1,5 +1,6 @@
 #include "login.h"
 #include "mainwindow.h"
+#include "registerdialog.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -137,32 +138,37 @@ void LoginWidget::on_loginButton_clicked() {
 
 
 
+//void LoginWidget::on_registerButton_clicked() {
+//    QString userId = userIdLineEdit->text();
+//    QString password = passwordLineEdit->text();
+
+//    QSqlQuery query;
+
+//    // 准备 SQL 插入语句
+//    QString insertStatement = "INSERT INTO students (student_id, password) VALUES (:id, :hash)";
+
+
+//    // 使用 prepare() 方法准备 SQL 语句，并为参数设置占位符
+//    query.prepare(insertStatement);
+
+//    // 绑定参数值
+//    query.bindValue(":id", userId);
+//    query.bindValue(":hash", password);
+
+
+//    if (!query.exec()) {
+//        // 如果执行失败，输出错误信息，后续再加错误原因
+//        QMessageBox::about(this, tr("错误！"), "用户名或者密码不符合规范");
+//    } else {
+//        // 如果执行成功，可以提示用户注册成功
+//        QMessageBox::about(this, tr("注册成功"), tr("注册成功"));
+//    }
+
+//}
+
 void LoginWidget::on_registerButton_clicked() {
-    QString userId = userIdLineEdit->text();
-    QString password = passwordLineEdit->text();
-
-    QSqlQuery query;
-
-    // 准备 SQL 插入语句
-    QString insertStatement = "INSERT INTO students (student_id, password) VALUES (:id, :hash)";
-
-
-    // 使用 prepare() 方法准备 SQL 语句，并为参数设置占位符
-    query.prepare(insertStatement);
-
-    // 绑定参数值
-    query.bindValue(":id", userId);
-    query.bindValue(":hash", password);
-
-
-    if (!query.exec()) {
-        // 如果执行失败，输出错误信息，后续再加错误原因
-        QMessageBox::about(this, tr("错误！"), "用户名或者密码不符合规范");
-    } else {
-        // 如果执行成功，可以提示用户注册成功
-        QMessageBox::about(this, tr("注册成功"), tr("注册成功"));
-    }
-
+    RegisterDialog registerDialog;
+        registerDialog.exec();
 }
 
 

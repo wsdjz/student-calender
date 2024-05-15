@@ -19,6 +19,7 @@ private slots:
     void openSchedule();
     void openTaskManager();
     void logout();
+    void reSetTable();
 private:
     QVBoxLayout *layout;
     QString studentId;

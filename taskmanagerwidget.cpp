@@ -212,26 +212,40 @@ void TaskManagerWidget::modifyTask()
     }
 
     int row = selectedIndexes.first().row();
-    QSqlRecord record = taskModel->record(row);
+    QSqlRecord originalRecord = taskModel->record(row);
 
-    TaskModifyDialog dialog(record, this);
+    TaskModifyDialog dialog(originalRecord, this);
     if (dialog.exec() == QDialog::Accepted) {
         QSqlRecord modifiedRecord = dialog.getModifiedRecord();
-        for (int i = 0; i < modifiedRecord.count(); ++i) {
-            if (modifiedRecord.fieldName(i) != "id") {
-                record.setValue(modifiedRecord.fieldName(i), modifiedRecord.value(i));
+
+        // 检查是否存在与修改后的记录相同的任务
+        QString content = modifiedRecord.value("content").toString();
+        if (taskModel->rowCount() > 0) {
+            for (int i = 0; i < taskModel->rowCount(); ++i) {
+                if (i != row && taskModel->record(i).value("content").toString() == content) {
+                    QMessageBox::critical(this, "错误", "无法修改任务：请勿与其他任务相同" );
+                    return;
+                }
             }
         }
 
-        if (!taskModel->setRecord(row, record)) {
-            QMessageBox::critical(this, "错误", "无法修改任务：" + taskModel->lastError().text());
-        } else {
-            taskModel->submitAll();
-            populateTaskTable();
-            QMessageBox::information(this, "成功", "任务修改成功！");
+        // 将修改后的记录应用到数据库中
+        if (!taskModel->setRecord(row, modifiedRecord)) {
+            QMessageBox::critical(this, "错误", "无法修改任务" );
+            return;
         }
+
+        // 提交更改并刷新任务表格
+        if (!taskModel->submitAll()) {
+            QMessageBox::critical(this, "错误", "无法提交任务更改" );
+            return;
+        }
+
+        populateTaskTable();
+        QMessageBox::information(this, "成功", "任务修改成功！");
     }
 }
+
 
 
 void TaskManagerWidget::populateTaskTable()
