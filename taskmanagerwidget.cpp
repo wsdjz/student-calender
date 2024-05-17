@@ -162,10 +162,6 @@ void TaskManagerWidget::setupUI()
 
 
 
-
-
-
-
 void TaskManagerWidget::createTaskTable()
 {
     taskModel = new QSqlTableModel(this);
@@ -191,12 +187,6 @@ void TaskManagerWidget::createTaskTable()
 
 
 }
-
-
-
-
-
-
 
 
 
